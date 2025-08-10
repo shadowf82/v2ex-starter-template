@@ -1,0 +1,5 @@
+packages:
+  # Current project root
+  - '.'
+  # Future packages can be added here
+  # - 'packages/*'
